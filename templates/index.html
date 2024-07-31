@@ -1,0 +1,209 @@
+<!--GUI for Breast Cancer Detection Application using SVM-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,
+    initial-scale=1.0"/>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Breast Cancer Detection</title>
+    
+   
+    <!--Font Awesome-->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</head>
+<style>
+:root {
+--gradients: linear-gradient(
+    45deg,
+    #f1abb9,
+    #eb92a9,
+    #e27092,
+    #df5d86,
+    #d14f7b
+    
+  );
+}
+
+
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+    body {
+      display: flex;
+    height: 110vh;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-size: 35%;
+    background-image: url("https://img.labpulse.com/files/base/smg/all/image/2023/02/breast_cancer_3D_social.63e2772ec88a2.png?auto=format%2Ccompress&q=70&w=880"),
+                      url(https://img.freepik.com/premium-vector/pink-ribbon-breast-cancer-awareness-banner_48369-14573.jpg?w=740);
+      
+    background-repeat:revert;
+    
+    animation: bg-anim 7s infinite alternate;
+  }
+  @keyframes bg-anim { 
+      0% {
+        background-position: 0% 0%;
+      }
+      100% {
+        background-position: 100% 0%;
+      }
+  }
+  
+
+
+    .container {
+      border-radius: 5px;
+      text-align: center;
+      max-width: 1331px  !important;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-container {
+      flex-direction: column;
+      display: flex;
+      align-items: center;
+      width: 955px;
+      background: rgb(221, 221, 221, 0.8);
+      box-shadow: 0 15px 33px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+      border-radius: 5px;
+      padding: 50px;
+    }
+
+    .head {
+      font-weight: bolder;
+      color: #ffffff;
+    }
+
+    .btn-primary {
+      border-color: #ff33 !important;
+      color: #f4f6fa;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+      background-color: #d14fc8 !important;
+      border-color: #d14f7b !important;
+      padding: 5px;
+    }
+
+    #predict {
+      display: none;
+    }
+
+    /* .  {
+      padding: 2px;
+    } */
+
+    .InputWrap{
+      display: flex;
+      margin: 10px;
+    }
+
+    .each{
+      margin: 10px;
+    }
+</style>
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1 class="head"> CancerAI Prognosis: Python-Based Breast Cancer Prediction </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="btn-container">
+
+          <!-- Main Input For Receiving Query to our ML -->
+          <form action="{{ url_for('predict')}}" method="post" class="form-inline">
+              <div class="row">
+                  <div class="col-md-6">
+      <img style="min-width: 250x;" class="image" src="static/1.png"  alt="Centered Image" width="400" style="height: auto;">
+      />
+    </div>
+
+                      <div class="col-md-6">
+                          <div class="container">
+                              <h4 style="margin: 5px;">ENTER CELL DETAILS</h4>
+                              
+                              <div class="InputWrap">
+                              <div class="each">
+                                  <label for="clump_thickness">Clump Thickness </label>
+                                  <input type="text" class="form-control" name="clump_thickness" required="required">
+                              </div>
+                              <div class="each">
+                                  <label for="uniform_cell_size">Uniform Cell size</label>
+                                  <input type="text" class="form-control" name="uniform_cell_size" required="required">
+                              </div>
+                            </div>
+
+
+                          <div class="InputWrap">
+                              <div class="each">
+                                  <label for="uniform_cell_shape">Uniform Cell shape</label>
+                                  <input type="text" class="form-control" name="uniform_cell_shape" required="required" />
+                              </div>
+                              <div class="each">
+                                  <label for="marginal_adhesion">Marginal Adhesion</label>
+                                  <input type="text" class="form-control" name="marginal_adhesion" required="required" />
+                              </div>
+                          </div>
+
+                          <div class="InputWrap">
+                              <div class="each">
+                                  <label for="single_epithelial_size">Single Epithelial Cell Size</label>
+                                  <input type="text" class="form-control" name="single_epithelial_size" required="required" />
+                              </div>
+                              <div class="each">
+                                  <label for="bare_nuclei">Bare Nuclei</label>
+                                  <input type="text" class="form-control" name="bare_nuclei" required="required" />
+                              </div>
+                          </div>
+                          <div class="InputWrap">
+                              <div class="each">
+                                  <label for="bland_chromatin">Bland Chromatin</label>
+                                  <input type="text" class="form-control" name="bland_chromatin" required="required" />
+                              </div>
+                              <div class="each">
+                                  <label for="normal_nucleoli">Normal Nucleoli</label>
+                                  <input type="text" class="form-control" name="normal_nucleoli" required="required" />
+                              </div>
+                          </div>
+                          <div class="InputWrap">
+                              <div class="each">
+                                  <label for="mitoses">Mitoses</label>
+                                  <input type="text" class="form-control" name="mitoses" required="required" />
+                              </div>
+                              <button style="margin: 10px; width: 222px; height: 62px;" type="submit" class="btn btn-primary btn-lg">PREDICT CANCER</button>
+                          </div>
+
+                              
+                          </div>
+                      </div>
+                  </div>
+</form>
+
+
+        <br />
+        <center>
+          <h1>{{prediction_text}}</h1>
+        </center>
+        <br />
+</body>
+
+</html>
